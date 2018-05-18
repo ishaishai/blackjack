@@ -4,15 +4,6 @@ from Classes import Blackjack
 class Chips:
     def __init__(self, total):
         self.total = total
-        self.bet = 0
-
-    def win_bet(self):
-        self.total += (self.bet * 2)
-        self.bet = 0
-
-    def lost_bet(self):
-        self.total -= self.bet
-        self.bet = 0
 
 
 class Hand:
@@ -46,6 +37,9 @@ class Hand:
         for mycard in self.cards:
             print(mycard)
 
+    def get_card(self,num):
+        self.cards.pop(num)
+
 
 class Player():
     def __init__(self, name='Dealer', tchips=100):
@@ -72,7 +66,3 @@ class Player():
         else:
             print(self.hands[0].__str__())  # prints also None object
 
-# def __str__(self):
-#     return self.name+" cards:"
-#     print(self.name+" cards:")
-#     self.print_hands()

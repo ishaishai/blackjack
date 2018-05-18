@@ -21,13 +21,13 @@ def set_hand_bet(gametable,player,hand):
         bet=0
         try:
             bet = int(input(("{}, please place bet(you hold {} chips): ").format(player.name,player.mychips.total)))
-            if ((bet >=25 or bet <= player.mychips.total) and (bet == 25 or bet == 50 or bet == 100)):
+            if (bet >=1 and bet <= player.mychips.total and bet%25==0):
                 hand.betvalue = bet
                 player.mychips.total -=bet
                 print("Bet value set to: {} you've got left {} Chips".format(hand.betvalue, player.mychips.total))
                 break
             else:
-                print("You've got only 10,25,50,100 chips")
+                print("You've got only 25,50,100 chips")
         except ValueError:
             print("Please pick a number")
 
@@ -38,18 +38,19 @@ def player_decision(gametable):
                 print("{} it's your turn:\nhand {}:\n".format(player.name, hand.handnum))
                 ascii_version_of_card(gametable,player,hand.cards)
                 print("Hand value: {}, Bet value: {}$".format(hand.value,hand.betvalue))
-                # for mycard in hand.cards:
-                #     print(mycard.__str__())
-                decision = input("Hit or Stand (h or s): ")
-                if(decision.lower()=='s'):
-                    stand(hand)
-                while(decision.lower()=='h'):
-                    hit(gametable,player,hand)
-                    ascii_version_of_card(gametable,player,hand.cards)
-                    print("Hand value: {}, Bet value: {}$".format(hand.value,hand.betvalue))
-                    decision='none'
-                    if(hand.status!='b'):
-                        decision = input("hit or stand? ")
+                if (hand.value < 21):
+                    decision = input("Hit or Stand (h or s): ")
+                    if(decision.lower()=='s'):
+                        stand(hand)
+                    while(decision.lower()=='h'):
+                        hit(gametable,player,hand)
+                        ascii_version_of_card(gametable,player,hand.cards)
+                        print("Hand value: {}, Bet value: {}$".format(hand.value,hand.betvalue))
+                        decision='none'
+                        if(hand.status!='b' and hand.value<21):
+                            decision = input("hit or stand? ")
+                        else:
+                            break
     for hand in gametable.dealer.hands:
         if(hand.value<=17):
             dealer_refill=0
@@ -66,6 +67,9 @@ def player_decision(gametable):
                 delay(3)
             if(dealer_refill==0):
                 ascii_version_of_card(gametable,gametable.dealer,hand.cards)
+        else:
+            print("\n{} holds:".format(gametable.dealer.name))
+            ascii_version_of_card(gametable, gametable.dealer, hand.cards)
 
     print("------------No More Deal-------------\n\n")
 

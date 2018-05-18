@@ -2,10 +2,18 @@ from Classes.Blackjack import *
 from Classes.Character import *
 from Classes.Deck import *
 from Classes import Deck
+
 from Functions.PlayerFuncs import *
+
 import time
+#
+# def create_new_deck(gametable):
+#     gametable.mydeck.deck = Deck.TableDeck()
+#     gametable.mydeck.shuffle()
 
 def deal_all(gametable):
+    # if (gametable.mydeck.deck == True):
+    #     create_new_deck(gametable)
     for player in gametable.players:
         for hand in player.hands:
             first_crd = gametable.mydeck.deal()
@@ -13,23 +21,35 @@ def deal_all(gametable):
     for player in gametable.players:
             for hand in player.hands:
                 #fix if player doesnt want to split hands
-                split='y'
-                if(gametable.mydeck.peek().rank == hand.cards[0].rank):
-                    try:
-                        split = input("{} Would you like to split?\nCurrent cards are: \n{}\n{}\nAnswer: (y or n):".format(player.name, hand.cards[0].__str__(), gametable.mydeck.peek().__str__()))
-                        if(split.lower() == 'y'):
-                            print("Splitting...")
-                            splitbet = float(hand.betvalue / 2)
-                            hand.betvalue = splitbet
-                            player.add_hand(Hand(player.cnthands + 1), gametable.mydeck.deal())
-                            player.hands[-1].betvalue = splitbet
-                        if(split.lower=='n'):
-                            hand.add_card(gametable.mydeck.deal())
-                        break
-                    except ValueError:
-                        print("Please pick y or n")
-                else:
-                    hand.add_card(gametable.mydeck.deal())
+                flag=0
+                nextcard = gametable.mydeck.deal()
+                if(nextcard.rank == hand.cards[0].rank):
+                    #print(gametable.mydeck.peek().rank+hand.cards[0].rank)
+                    while(True):
+                        try:
+                            split = input("{} Would you like to split?\nCurrent cards are: \n{}\n{}\nAnswer: (y or n):".format(player.name, hand.cards[0].__str__(), nextcard.__str__()))
+                            if(split.lower() == 'y'):
+                                print("Splitting...")
+                                splitbet = int(hand.betvalue / 2)
+                                hand.betvalue = splitbet
+                                player.add_hand(Hand(player.cnthands + 1), nextcard)
+                                player.hands[player.cnthands-1].betvalue = splitbet
+                                nextcard = gametable.mydeck.deal()
+                                if(nextcard.rank != hand.cards[0].rank):
+                                    hand.add_card(nextcard)
+                                    break
+                            elif(split.lower=='n'):
+                                print("ASKED NOT TO SPLIT")
+                                hand.add_card(nextcard)
+                                break
+                            else:
+                                print("Only y or n")
+                        except ValueError:
+                                print("Please pick y or n")
+                        # except nextcard.rank == hand.cards[0].rank:
+                        #     continue
+
+
     for player in gametable.players:
         for cur_hand in player.hands:
             if(cur_hand.numcards<2):
@@ -82,7 +102,7 @@ def ascii_version_of_card(gametable,player,cards):
 
 def loose_bet(gametable,player,hand):
     print("{}: total chips -> {}, lost -> {}\n".format(player.name, player.mychips.total, hand.betvalue))
-    if (player.mychips.total == 0):
+    if (player.mychips.total <25):
         print("Player {} has to go\n".format(player.name))
         gametable.players.remove(player)
     time.sleep(0.8)
@@ -114,6 +134,7 @@ def clear_players_hands(gametable):
     #         print("hello")
     gametable.firstprint = 1
     gametable.dealerprint = 1
+    gametable.dealer.hidecard = 1
 
 #prints all players hands
 def print_all(gametable):
@@ -162,7 +183,7 @@ def check_win(gametable):
     for player in rev_pl_list[::-1]:
         for hand in player.hands:
             print("Checking player {} ...\n".format(player.name))
-            if(hand.value > gametable.dealer.hands[0].value and hand.status!='b'):
+            if((hand.value > gametable.dealer.hands[0].value or (hand.value<=21 and gametable.dealer.hands[0].value>21)) and hand.status!='b'):
                 win_bet(player,hand,2)
             elif(hand.value==gametable.dealer.hands[0].value and hand.status!='b'):
                 player.mychips.total +=hand.betvalue
@@ -175,4 +196,4 @@ def check_win(gametable):
 
 def win_bet(player,hand,percent):
     player.mychips.total += hand.betvalue*percent
-    print("{} overcome the dealer, {} chips, total updated: {}".format(player.name,hand.betvalue*2,player.mychips.total))
+    print("{} overcome the dealer, won {} chips, total updated: {}".format(player.name,hand.betvalue*2,player.mychips.total))

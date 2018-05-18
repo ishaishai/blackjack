@@ -1,4 +1,5 @@
 import random
+import time
 
 
 suits = ('Hearts', 'Diamonds', 'Spades', 'Clubs')
@@ -22,6 +23,13 @@ class TableDeck:
             for rank in ranks:
                 self.deck.append(Card(suit,rank))
 
+    def create_new_deck(self):
+        self.deck = list()
+        for suit in suits:
+            for rank in ranks:
+                self.deck.append(Card(suit,rank))
+        self.shuffle()
+
     def __str__(self):
         deck_comp = ''
         for card in self.deck:
@@ -32,7 +40,11 @@ class TableDeck:
         random.shuffle(self.deck)
 
     def deal(self):
+        if (len(self.deck) == 0):
+            self.create_new_deck()
         return self.deck.pop(0)
 
     def peek(self):
-        return self.deck[0]
+        if (len(self.deck)==0):
+            self.create_new_deck()
+        return self.deck.pop(0)

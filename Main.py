@@ -16,11 +16,11 @@ def main():
         print_all(gametable)
         player_decision(gametable)
         check_win(gametable)
-        print("HAH")
         clear_players_hands(gametable)
         if(len(gametable.players)==0):
             print("Dealer takes it all...go practice")
             break
+        gametable.banner("Next Round of BlackJack")
     # for player in gametable.players:
     #     for hand in player.hands:
     #
@@ -43,5 +43,3 @@ def main():
                    #  player.split_hand(gametable.mydeck)
 
 main()
-
-# def get_card(gametable):
