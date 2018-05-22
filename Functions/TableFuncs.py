@@ -24,8 +24,8 @@ def deal_all(gametable):
                 flag=0
                 nextcard = gametable.mydeck.deal()
                 if(nextcard.rank == hand.cards[0].rank):
-                    #print(gametable.mydeck.peek().rank+hand.cards[0].rank)
-                    while(True):
+                    print(hand.cards[0].rank + nextcard.rank)
+                    while(flag==0):
                         try:
                             split = input("{} Would you like to split?\nCurrent cards are: \n{}\n{}\nAnswer: (y or n):".format(player.name, hand.cards[0].__str__(), nextcard.__str__()))
                             if(split.lower() == 'y'):
@@ -37,23 +37,23 @@ def deal_all(gametable):
                                 nextcard = gametable.mydeck.deal()
                                 if(nextcard.rank != hand.cards[0].rank):
                                     hand.add_card(nextcard)
+                                    flag=0
                                     break
-                            elif(split.lower=='n'):
-                                print("ASKED NOT TO SPLIT")
-                                hand.add_card(nextcard)
-                                break
                             else:
-                                print("Only y or n")
+                                flag=1
+                                hand.add_card(nextcard)
                         except ValueError:
                                 print("Please pick y or n")
                         # except nextcard.rank == hand.cards[0].rank:
                         #     continue
+                else:
+                    hand.add_card(nextcard)
 
-
-    for player in gametable.players:
-        for cur_hand in player.hands:
-            if(cur_hand.numcards<2):
-                cur_hand.add_card(gametable.mydeck.deal())
+    # for player in gametable.players:
+    #     for cur_hand in player.hands:
+    #         if(cur_hand.numcards<2):
+    #             print("MISSING CARD,ADDED")
+    #             cur_hand.add_card(gametable.mydeck.deal())
 
     for hand in gametable.dealer.hands:
         for i in range(2):
