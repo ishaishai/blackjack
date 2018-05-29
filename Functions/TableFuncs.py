@@ -182,18 +182,21 @@ def check_win(gametable):
 
     for player in rev_pl_list[::-1]:
         for hand in player.hands:
-            print("Checking player {} ...\n".format(player.name))
-            if((hand.value > gametable.dealer.hands[0].value or (hand.value<=21 and gametable.dealer.hands[0].value>21)) and hand.status!='b'):
-                win_bet(player,hand,2)
-            elif(hand.value==gametable.dealer.hands[0].value and hand.status!='b'):
+            print("Checking {} hand num {} ...".format(player.name,hand.handnum))
+            if((hand.value > gametable.dealer.hands[0].value or (hand.value<=21 and gametable.dealer.hands[0].value>21)) and hand.status!='b' and hand.natural==0):
+                win_bet(gametable,player,hand,2)
+            elif((hand.value==gametable.dealer.hands[0].value and hand.status!='b') or (hand.natural==1 and gametable.dealer.hands[0].natural==1)):
                 player.mychips.total +=hand.betvalue
                 hand.betvalue=0
-                print("Player {}: Hand {} ended by draw".format(player.name,hand.handnum))
+                print("Player {}: Hand {} ended by draw\n".format(player.name,hand.handnum))
+            elif(hand.natural==1 and gametable.dealer.hands[0].natural==0):
+                win_bet(gametable,player,hand,2.5)
+                print("Oh, that one was a fine BlackJack\n")
             else:
                 loose_bet(gametable,player,hand)
 
 
 
-def win_bet(player,hand,percent):
-    player.mychips.total += hand.betvalue*percent
-    print("{} overcome the dealer, won {} chips, total updated: {}".format(player.name,hand.betvalue*2,player.mychips.total))
+def win_bet(gametable,player,hand,win_rate):
+    player.mychips.total += hand.betvalue*win_rate
+    print("{} overcome the dealer, won {} chips, total updated: {}\n".format(player.name,hand.betvalue*win_rate,player.mychips.total))

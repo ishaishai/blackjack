@@ -15,7 +15,7 @@ class Hand:
         self.betvalue = 0
         self.numcards=0
         self.handnum = handnum
-
+        self.natural=0
     #    def set_bet_value(self):
 
     def add_card(self, tempcard):
@@ -27,6 +27,8 @@ class Hand:
         if self.aces>=1 and self.numcards>1 and self.value > 21:
             #self.aces += 1
             self.adjust_for_ace()
+        if(self.numcards==2 and self.value==21):
+            self.natural=1
 
     def adjust_for_ace(self):
         while (self.value > 21 and self.aces > 0):
@@ -42,7 +44,7 @@ class Hand:
 
 
 class Player():
-    def __init__(self, name='Dealer', tchips=100):
+    def __init__(self, name='Dealer', tchips=1000):
         self.cnthands = 1
         self.hands = [Hand(self.cnthands)]
         # self.name = input("What is your name?\nName: ")
