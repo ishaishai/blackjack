@@ -59,6 +59,7 @@ def deal_all(gametable):
         for i in range(2):
             hand.add_card(gametable.mydeck.deal())
 
+
 def ascii_version_of_card(gametable,player,cards):
     # create an empty list of list, each sublist is a line
     displaycards = []
@@ -100,6 +101,7 @@ def ascii_version_of_card(gametable,player,cards):
         print(l)
         delay(0.1)
 
+
 def loose_bet(gametable,player,hand):
     print("{}: total chips -> {}, lost -> {}\n".format(player.name, player.mychips.total, hand.betvalue))
     if (player.mychips.total <25):
@@ -111,6 +113,7 @@ def loose_bet(gametable,player,hand):
     #         for hand in player.hands:
     #             if(hand == hnd_check):
 
+#def place_insurance(gametable,player,hand):
 
 
 def delay(x):

@@ -27,9 +27,22 @@ def set_hand_bet(gametable,player,hand):
                 print("Bet value set to: {} you've got left {} Chips".format(hand.betvalue, player.mychips.total))
                 break
             else:
-                print("You've got only 25,50,100 chips")
+                print("You've got only {} chips".format(player.mychips.total))
         except ValueError:
             print("Please pick a number")
+
+
+def fold_down(player,hand):
+    print("{} decided to surrender and lost {} chips\n".format(player.name,hand.betvalue))
+    del player.hands[player.hands.index(hand)]
+
+def double_down(gametable,player,hand):
+    player.mychips.total -= hand.betvalue
+    hand.betvalue *= 2
+    print("{} has doubled the bet and draw last card...".format(player.name))
+    hit(gametable,player,hand)
+    ascii_version_of_card(gametable,player,hand.cards)
+
 
 def player_decision(gametable):
     for i,player in enumerate(gametable.players,1):
@@ -39,18 +52,31 @@ def player_decision(gametable):
                 ascii_version_of_card(gametable,player,hand.cards)
                 print("Hand value: {}, Bet value: {}$".format(hand.value,hand.betvalue))
                 if (hand.value < 21):
-                    decision = input("Hit or Stand (h or s): ")
-                    if(decision.lower()=='s'):
-                        stand(hand)
-                    while(decision.lower()=='h'):
-                        hit(gametable,player,hand)
-                        ascii_version_of_card(gametable,player,hand.cards)
-                        print("Hand value: {}, Bet value: {}$".format(hand.value,hand.betvalue))
-                        decision='none'
-                        if(hand.status!='b' and hand.value<21):
-                            decision = input("hit or stand? ")
-                        else:
+                    while(True):
+                        decision = input("Hit or Stand or Fold(Surrender) or Double-down (h or s or f or d): ")
+                        if(decision.lower()=='s'):
+                            stand(hand)
                             break
+                        elif(decision.lower()=='f'):
+                            fold_down(player,hand)
+                            break
+                        elif(hand.betvalue<=player.mychips.total and decision.lower()=='d'):
+                            double_down(gametable,player,hand)
+                            break
+                        elif(decision.lower()=='h'):
+                            while(decision.lower()=='h'):
+                                hit(gametable,player,hand)
+                                ascii_version_of_card(gametable,player,hand.cards)
+                                print("Hand value: {}, Bet value: {}$".format(hand.value,hand.betvalue))
+                                decision='none'
+                                if(hand.status!='b' and hand.value<21):
+                                    decision = input("hit or stand? ")
+                                else:
+                                    break
+                        else:
+                            print("Only h or s or f or d")
+
+
     for hand in gametable.dealer.hands:
         if(hand.value<=17):
             dealer_refill=0
