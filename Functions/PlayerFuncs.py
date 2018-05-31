@@ -73,6 +73,7 @@ def player_decision(gametable):
                                     decision = input("hit or stand? ")
                                 else:
                                     break
+                            break
                         else:
                             print("Only h or s or f or d")
 
