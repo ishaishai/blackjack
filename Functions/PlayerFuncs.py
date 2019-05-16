@@ -21,7 +21,7 @@ def set_hand_bet(gametable,player,hand):
         bet=0
         try:
             bet = int(input(("{}, please place bet(you hold {} chips): ").format(player.name,player.mychips.total)))
-            if (bet >=1 and bet <= player.mychips.total and bet%25==0):
+            if (bet >=1 and bet <= player.mychips.total):
                 hand.betvalue = bet
                 player.mychips.total -=bet
                 print("Bet value set to: {} you've got left {} Chips".format(hand.betvalue, player.mychips.total))

@@ -24,7 +24,6 @@ def deal_all(gametable):
                 flag=0
                 nextcard = gametable.mydeck.deal()
                 if(nextcard.rank == hand.cards[0].rank):
-                    print(hand.cards[0].rank + nextcard.rank)
                     while(flag==0):
                         try:
                             split = input("{} Would you like to split?\nCurrent cards are: \n{}\n{}\nAnswer: (y or n):".format(player.name, hand.cards[0].__str__(), nextcard.__str__()))
